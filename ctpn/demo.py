@@ -18,13 +18,19 @@ from lib.text_connector.detectors import TextDetector
 from lib.text_connector.text_connect_cfg import Config as TextLineCfg
 
 
+'''
+    scaling
+'''
+
 def resize_im(im, scale, max_scale=None):
     f = float(scale) / min(im.shape[0], im.shape[1])
     if max_scale != None and f * max(im.shape[0], im.shape[1]) > max_scale:
         f = float(max_scale) / max(im.shape[0], im.shape[1])
     return cv2.resize(im, None, None, fx=f, fy=f, interpolation=cv2.INTER_LINEAR), f
 
-
+'''
+    based on prediction performance below part is drawing bounding boxs
+'''
 def draw_boxes(img, image_name, boxes, scale):
     base_name = image_name.split('/')[-1]
     with open('data/results/' + 'res_{}.txt'.format(base_name.split('.')[0]), 'w') as f:
@@ -51,7 +57,12 @@ def draw_boxes(img, image_name, boxes, scale):
     img = cv2.resize(img, None, None, fx=1.0 / scale, fy=1.0 / scale, interpolation=cv2.INTER_LINEAR)
     cv2.imwrite(os.path.join("data/results", base_name), img)
 
-
+'''
+    1.read image
+    2.resize image
+    3.test_ctpn : i think predicting BB and score
+    4.textdetector.detect : I think this part refines 
+'''
 def ctpn(sess, net, image_name):
     timer = Timer()
     timer.tic()
@@ -69,10 +80,17 @@ def ctpn(sess, net, image_name):
 
 
 if __name__ == '__main__':
+    
+    '''
+        deletes the old results
+    '''
     if os.path.exists("data/results/"):
         shutil.rmtree("data/results/")
     os.makedirs("data/results/")
 
+    '''
+        contains information to load model
+    '''
     cfg_from_file('ctpn/text.yml')
 
     # init session
@@ -82,8 +100,14 @@ if __name__ == '__main__':
     net = get_network("VGGnet_test")
     # load model
     print(('Loading network {:s}... '.format("VGGnet_test")), end=' ')
+    
+    '''
+        to save and restore session
+    '''
     saver = tf.train.Saver()
-
+    '''
+        for saving intermediate state
+    '''
     try:
         ckpt = tf.train.get_checkpoint_state(cfg.TEST.checkpoints_path)
         print('Restoring from {}...'.format(ckpt.model_checkpoint_path), end=' ')
@@ -96,6 +120,9 @@ if __name__ == '__main__':
     for i in range(2):
         _, _ = test_ctpn(sess, net, im)
 
+    '''
+        all training file are read
+    '''
     im_names = glob.glob(os.path.join(cfg.DATA_DIR, 'demo', '*.png')) + \
                glob.glob(os.path.join(cfg.DATA_DIR, 'demo', '*.jpg'))
 
