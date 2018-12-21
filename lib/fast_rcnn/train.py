@@ -24,11 +24,16 @@ class SolverWrapper(object):
         print('done')
 
         # For checkpoint
+        # ?? saving records
         self.saver = tf.train.Saver(max_to_keep=100,write_version=tf.train.SaverDef.V2)
         self.writer = tf.summary.FileWriter(logdir=logdir,
                                              graph=tf.get_default_graph(),
                                              flush_secs=5)
 
+    '''
+        some operation related with weight and bias
+        what is significance of filename here??
+    '''
     def snapshot(self, sess, iter):
         net = self.net
         if cfg.TRAIN.BBOX_REG and 'bbox_pred' in net.layers and cfg.TRAIN.BBOX_NORMALIZE_TARGETS:
@@ -62,14 +67,26 @@ class SolverWrapper(object):
             sess.run(weights.assign(orig_0))
             sess.run(biases.assign(orig_1))
 
+            
+    '''
+        ???
+        creates new image, its name,  
+        log_image: not clear
+        log_image_data: image tensor
+        log_image_name:name
+        ???
+    '''
     def build_image_summary(self):
         # A simple graph for write image summary
 
         log_image_data = tf.placeholder(tf.uint8, [None, None, 3])
         log_image_name = tf.placeholder(tf.string)
+        
         # import tensorflow.python.ops.gen_logging_ops as logging_ops
+        
         from tensorflow.python.ops import gen_logging_ops
         from tensorflow.python.framework import ops as _ops
+        
         log_image = gen_logging_ops._image_summary(log_image_name, tf.expand_dims(log_image_data, 0), max_images=1)
         _ops.add_to_collection(_ops.GraphKeys.SUMMARIES, log_image)
         # log_image = tf.summary.image(log_image_name, tf.expand_dims(log_image_data, 0), max_outputs=1)
@@ -90,7 +107,7 @@ class SolverWrapper(object):
         log_image, log_image_data, log_image_name =\
             self.build_image_summary()
 
-        # optimizer
+        # optimizer parameters
         lr = tf.Variable(cfg.TRAIN.LEARNING_RATE, trainable=False)
         if cfg.TRAIN.SOLVER == 'Adam':
             opt = tf.train.AdamOptimizer(cfg.TRAIN.LEARNING_RATE)
@@ -124,6 +141,9 @@ class SolverWrapper(object):
                 raise Exception('Check your pretrained model {:s}'.format(self.pretrained_model))
 
         # resuming a trainer
+        '''
+            when restore is set not clear and what happens if it is set??
+        '''
         if restore:
             try:
                 ckpt = tf.train.get_checkpoint_state(self.output_dir)
@@ -146,6 +166,9 @@ class SolverWrapper(object):
                 print(lr)
 
             # get one batch
+            '''
+                does this blob mean images and annotations??
+            '''
             blobs = data_layer.forward()
 
             feed_dict={
