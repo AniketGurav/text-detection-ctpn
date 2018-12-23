@@ -53,6 +53,9 @@ def test_ctpn(sess, net, im, boxes=None):
     if cfg.TEST.HAS_RPN:
         feed_dict = {net.data: blobs['data'], net.im_info: blobs['im_info'], net.keep_prob: 1.0}
 
+    '''
+        below part calls get_output function from network.py Note it is not included in import
+    '''
     rois = sess.run([net.get_output('rois')[0]],feed_dict=feed_dict)
     rois=rois[0]
 
