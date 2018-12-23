@@ -45,6 +45,9 @@ class Network(object):
     def setup(self):
         raise NotImplementedError('Must be subclassed.')
 
+    '''
+        this part is not frequently used so difficult to debug
+    '''
     def load(self, data_path, session, ignore_missing=False):
         data_dict = np.load(data_path,encoding='latin1').item()
         for key in data_dict:
@@ -59,7 +62,10 @@ class Network(object):
                         if not ignore_missing:
 
                             raise
-
+    '''
+        below prints layes name and tensor name
+    '''
+                            
     def feed(self, *args):
         assert len(args)!=0
         self.inputs = []
