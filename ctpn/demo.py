@@ -73,6 +73,7 @@ def ctpn(sess, net, image_name):
     '''
         what is diffrence between boxes returned by test_ctpn and textdetector.detect
         test_ctpn has lot of false positive while rest reduces it.
+        It is present in test.py
         
     '''
     
