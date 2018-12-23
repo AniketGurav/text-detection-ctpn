@@ -37,6 +37,11 @@ def _get_blobs(im, rois):
     return blobs, im_scale_factors
 
 
+'''
+    below function returns 1st level of proposals.
+    Lot of values in it are false positive
+'''
+
 def test_ctpn(sess, net, im, boxes=None):
     blobs, im_scales = _get_blobs(im, boxes)
     if cfg.TEST.HAS_RPN:
