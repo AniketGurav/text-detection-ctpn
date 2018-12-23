@@ -80,6 +80,9 @@ class Network(object):
             self.inputs.append(layer)
         return self
 
+    '''
+        this function get call from test.py
+    '''
     def get_output(self, layer):
         try:
             layer = self.layers[layer]
