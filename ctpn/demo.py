@@ -69,6 +69,13 @@ def ctpn(sess, net, image_name):
 
     img = cv2.imread(image_name)
     img, scale = resize_im(img, scale=TextLineCfg.SCALE, max_scale=TextLineCfg.MAX_SCALE)
+    
+    '''
+        what is diffrence between boxes returned by test_ctpn and textdetector.detect
+        test_ctpn has lot of false positive while rest reduces it.
+        
+    '''
+    
     scores, boxes = test_ctpn(sess, net, img)
 
     textdetector = TextDetector()
@@ -109,7 +116,8 @@ if __name__ == '__main__':
         for saving intermediate state
     '''
     try:
-        ckpt = tf.train.get_checkpoint_state(cfg.TEST.checkpoints_path)
+        
+        ckpt = tf.train.get_checkpoint_state(cfg.TEST.checkpoints_path)# returns check points
         print('Restoring from {}...'.format(ckpt.model_checkpoint_path), end=' ')
         saver.restore(sess, ckpt.model_checkpoint_path)
         print('done')
