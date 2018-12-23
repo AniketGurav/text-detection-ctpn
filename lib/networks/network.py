@@ -6,6 +6,14 @@ from lib.rpn_msr.proposal_layer_tf import proposal_layer as proposal_layer_py
 from lib.rpn_msr.anchor_target_layer_tf import anchor_target_layer as anchor_target_layer_py
 DEFAULT_PADDING = 'SAME'
 
+
+
+'''
+    input and out not clear
+    input and output are 4d tensor
+    here op is used as a input as well as function.
+    
+'''
 def layer(op):
     def layer_decorated(self, *args, **kwargs):
         # Automatically set a name if not provided.
