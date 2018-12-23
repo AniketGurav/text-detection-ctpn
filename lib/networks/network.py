@@ -82,6 +82,7 @@ class Network(object):
 
     '''
         this function get call from test.py
+        in below function self.layers is a dictionry
     '''
     def get_output(self, layer):
         try:
