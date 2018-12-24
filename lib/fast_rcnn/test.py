@@ -56,7 +56,7 @@ def test_ctpn(sess, net, im, boxes=None):
     '''
         below part calls get_output function from network.py Note it is not included in import
         get_output('rois') returns output of rois layer. 
-        
+        here net is vgg16 model
     '''
     rois = sess.run([net.get_output('rois')[0]],feed_dict=feed_dict)
     rois=rois[0]
